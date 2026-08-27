@@ -6,13 +6,30 @@ body {
   color: #333;
 }
 
-/* Tela de Login Simples */
+/* --- CABEÇALHO GLOBAL (HEADER) --- */
+.main-header {
+  background-color: #0033a0; /* Cor azul principal */
+  color: white;
+  padding: 15px 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* --- TELA DE LOGIN --- */
 #login-screen {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 65px); /* Altura da tela menos o cabeçalho */
   background-color: #f4f7f6;
 }
 
@@ -42,32 +59,55 @@ body {
   font-weight: bold;
 }
 
-/* Painel ADM */
+/* --- PAINEL ADM --- */
 #admin-content {
-  display: none; /* Escondido por padrão */
+  display: none;
   padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.admin-header {
+.admin-header-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 2px solid #ddd;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.search-bar {
+.admin-title {
+  color: #0033a0;
+  margin: 0;
+}
+
+/* Controles de Filtro e Pesquisa */
+.filter-group {
+  display: flex;
+  gap: 15px;
+}
+
+.search-bar,
+.filter-select {
   padding: 12px;
-  width: 300px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
+  background-color: white;
 }
 
-/* Layout em Grid para as Listas */
+.search-bar {
+  width: 280px;
+}
+
+.filter-select {
+  width: 200px;
+  cursor: pointer;
+}
+
+/* --- LAYOUT EM GRID --- */
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;

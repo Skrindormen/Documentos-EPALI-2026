@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="/css/admin.css" />
   </head>
   <body>
+    <!-- CABEÇALHO GLOBAL -->
+    <header class="main-header">
+      <h2>Portal EPALI</h2>
+      <a
+        href="/index.html"
+        style="color: white; text-decoration: none; font-weight: bold"
+        >Voltar ao Site</a
+      >
+    </header>
+
     <!-- TELA DE LOGIN -->
     <div id="login-screen">
       <div class="login-box">
@@ -27,65 +37,54 @@
 
     <!-- PAINEL ADMINISTRATIVO -->
     <div id="admin-content">
-      <div class="admin-header">
-        <h1 style="color: #0033a0; margin: 0">Painel de Documentos</h1>
-        <input
-          type="text"
-          id="search-input"
-          class="search-bar"
-          onkeyup="filtrarNomes()"
-          placeholder="Pesquisar por nome ou unidade..."
-        />
+      <div class="admin-header-controls">
+        <h1 class="admin-title">Painel de Documentos</h1>
+
+        <div class="filter-group">
+          <!-- Filtro de Unidades baseado nas pastas do Supabase -->
+          <select
+            id="unit-filter"
+            class="filter-select"
+            onchange="filtrarDocumentos()"
+          >
+            <option value="todas">Todas as Unidades</option>
+            <option value="Alphaville">Alphaville</option>
+            <option value="Centro">Centro</option>
+            <option value="Guarulhos">Guarulhos</option>
+            <option value="Itaquera">Itaquera</option>
+            <option value="Lapa">Lapa</option>
+            <option value="Norte">Norte</option>
+            <option value="Osasco">Osasco</option>
+            <option value="Ribeirao_Preto">Ribeirão Preto</option>
+            <option value="Santo_Amaro">Santo Amaro</option>
+            <option value="Sao_Jose_dos_Campos">São José dos Campos</option>
+          </select>
+
+          <!-- Barra de Pesquisa por nome -->
+          <input
+            type="text"
+            id="search-input"
+            class="search-bar"
+            onkeyup="filtrarDocumentos()"
+            placeholder="Pesquisar por nome do jovem..."
+          />
+        </div>
       </div>
 
       <div class="grid-container">
-        <!-- Coluna 1: Autorização de Imagem -->
         <div class="list-section">
           <h2>Autorização de Imagem</h2>
-          <ul class="doc-list" id="lista-imagem">
-            <!-- Estes são dados de exemplo. O próximo passo será puxar isso do Java -->
-            <li class="doc-item">
-              <div class="doc-info">
-                <span class="doc-name">João da Silva</span>
-                <span class="doc-unit">Guarulhos</span>
-              </div>
-              <span class="tag-imagem">IMAGEM</span>
-            </li>
-            <li class="doc-item">
-              <div class="doc-info">
-                <span class="doc-name">Maria Oliveira</span>
-                <span class="doc-unit">Osasco</span>
-              </div>
-              <span class="tag-imagem">IMAGEM</span>
-            </li>
-          </ul>
+          <ul class="doc-list" id="lista-imagem"></ul>
         </div>
 
-        <!-- Coluna 2: Autorização de Menor -->
         <div class="list-section">
           <h2>Autorização de Menor</h2>
-          <ul class="doc-list" id="lista-menor">
-            <li class="doc-item">
-              <div class="doc-info">
-                <span class="doc-name">Pedro Santos</span>
-                <span class="doc-unit">Itaquera</span>
-              </div>
-              <span class="tag-menor">MENOR</span>
-            </li>
-            <li class="doc-item">
-              <div class="doc-info">
-                <span class="doc-name">Ana Costa</span>
-                <span class="doc-unit">Guarulhos</span>
-              </div>
-              <span class="tag-menor">MENOR</span>
-            </li>
-          </ul>
+          <ul class="doc-list" id="lista-menor"></ul>
         </div>
       </div>
     </div>
 
     <script>
-      // 1. LISTA DE E-MAILS PERMITIDOS (Adicione os e-mails da comissão aqui)
       const emailsPermitidos = [
         "amanda.areas@uol.com.br",
         "biachinellato@gmail.com",
@@ -116,21 +115,100 @@
         if (emailsPermitidos.includes(emailDigitado)) {
           document.getElementById("login-screen").style.display = "none";
           document.getElementById("admin-content").style.display = "block";
+
+          carregarDocumentos();
         } else {
           document.getElementById("erro-login").style.display = "block";
         }
       }
 
-      // 2. FUNÇÃO DA BARRA DE PESQUISA
-      function filtrarNomes() {
+      async function carregarDocumentos() {
+        try {
+          const resposta = await fetch("/api/documentos/listar-todos");
+          const arquivos = await resposta.json();
+
+          const listaImagem = document.getElementById("lista-imagem");
+          const listaMenor = document.getElementById("lista-menor");
+
+          listaImagem.innerHTML = "";
+          listaMenor.innerHTML = "";
+
+          let qtdImagem = 0;
+          let qtdMenor = 0;
+
+          if (arquivos && arquivos.length > 0) {
+            arquivos.forEach((arquivo) => {
+              const nomeCompleto = arquivo.name;
+
+              if (!nomeCompleto || !nomeCompleto.includes(".pdf")) return;
+
+              const partes = nomeCompleto.split("/");
+              const nomeArquivo = partes[partes.length - 1];
+              const unidade = partes.length > 1 ? partes[0] : "Documento Salvo";
+              const isImagem = nomeArquivo.includes("IMAGEM");
+
+              let nomeJovem = nomeArquivo
+                .replace("Autorizacao_IMAGEM_", "")
+                .replace("Autorizacao_MENOR_", "")
+                .replace(".pdf", "")
+                .replaceAll("_", " ");
+
+              const itemHTML = `
+                            <li class="doc-item">
+                                <div class="doc-info">
+                                    <span class="doc-name">${nomeJovem}</span>
+                                    <span class="doc-unit">${unidade}</span>
+                                </div>
+                                <span class="${isImagem ? "tag-imagem" : "tag-menor"}">
+                                    ${isImagem ? "IMAGEM" : "MENOR"}
+                                </span>
+                            </li>
+                        `;
+
+              if (isImagem) {
+                listaImagem.innerHTML += itemHTML;
+                qtdImagem++;
+              } else {
+                listaMenor.innerHTML += itemHTML;
+                qtdMenor++;
+              }
+            });
+          }
+
+          const mensagemVazio = `<li style="padding: 20px; text-align: center; color: #777; font-style: italic;">Ainda não foram preenchidos nenhum documento</li>`;
+
+          if (qtdImagem === 0) listaImagem.innerHTML = mensagemVazio;
+          if (qtdMenor === 0) listaMenor.innerHTML = mensagemVazio;
+        } catch (erro) {
+          console.error("Erro ao carregar documentos:", erro);
+          alert("Falha ao carregar a lista de documentos.");
+        }
+      }
+
+      // FUNÇÃO DE FILTRO ATUALIZADA (Cruza o texto digitado com a unidade escolhida)
+      function filtrarDocumentos() {
         const termo = document
           .getElementById("search-input")
           .value.toLowerCase();
+        const unidadeSelecionada = document.getElementById("unit-filter").value;
         const itens = document.querySelectorAll(".doc-item");
 
         itens.forEach((item) => {
-          const textoItem = item.innerText.toLowerCase();
-          if (textoItem.includes(termo)) {
+          const nomeItem = item
+            .querySelector(".doc-name")
+            .innerText.toLowerCase();
+          const unidadeItem = item.querySelector(".doc-unit").innerText;
+
+          // Verifica se o texto bate
+          const correspondeNome = nomeItem.includes(termo);
+
+          // Verifica se a unidade bate (ou se a opção "Todas" está marcada)
+          const correspondeUnidade =
+            unidadeSelecionada === "todas" ||
+            unidadeItem === unidadeSelecionada;
+
+          // Só mostra se passar nos dois testes
+          if (correspondeNome && correspondeUnidade) {
             item.style.display = "flex";
           } else {
             item.style.display = "none";
