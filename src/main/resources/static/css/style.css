@@ -22,65 +22,24 @@ body {
 /* ================= CABEÇALHO (ESTILO BANNER) ================= */
 header {
   width: 100%;
-  /* Cor de fundo verde floresta escuro */
   background-color: #1a3623;
-  /* Coloque aqui o caminho da sua imagem com as folhas de palmeira! */
   background-image: url("/img/fundo-folhas.jpg");
+
+  /* 1. ESTAS TRÊS LINHAS CONSERTAM A IMAGEM DE FUNDO (Removem a quebra) */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 
-  /* Espaçamento em cima e embaixo para dar a altura do banner */
   padding: 40px 0;
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Empurra os logos para o centro */
   align-items: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   margin-bottom: 40px;
+
+  /* 2. ESTA LINHA TRAVA O BOTÃO NO CANTO E LIBERA O CENTRO PARA OS LOGOS */
+  position: relative;
 }
-
-.logos-container {
-  display: flex;
-  align-items: center;
-  gap: 20px; /* Espaço entre os dois logos */
-}
-
-/* Ajustes individuais de cada logo para ficarem equilibrados */
-.logo-epali {
-  height: 90px;
-  object-fit: contain;
-  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
-}
-
-.logo-acm {
-  height: 75px; /* A logo da ACM costuma ser um pouco mais "quadrada", então uma altura levemente menor a equilibra com o Brasil */
-  object-fit: contain;
-  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
-}
-
-/* Estilo para o Botão ADM na Header */
-.btn-adm {
-  position: absolute; /* Permite mover o botão livremente dentro da header */
-  bottom: 15px; /* Cola o botão a 15px do fundo da header */
-  right: 20px; /* Cola o botão a 20px da lateral direita */
-
-  background-color: rgba(255, 255, 255, 0.1); /* Fundo levemente transparente */
-  color: #ffffff; /* Texto branco */
-  border: 2px solid #ffffff; /* Borda branca para destacar sem destoar */
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s ease; /* Efeito suave na animação */
-}
-
-/* Efeito ao passar o mouse por cima (Hover) */
-.btn-adm:hover {
-  background-color: #ffffff; /* O fundo fica todo branco */
-  color: #1b4332; /* O texto muda para um verde escuro floresta (combina com o fundo) */
-}
-
 /* ================= BOTÕES SELETORES (ABAS) ================= */
 .seletor-documento {
   display: flex;

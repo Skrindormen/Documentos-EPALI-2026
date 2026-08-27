@@ -17,17 +17,16 @@
       </div>
 
       <!-- Sua header atual (adicione o position: relative nela se já não tiver) -->
-      <header
-        style="
-          position: relative; /* mantenha as suas outras configurações de fundo aqui */
-        "
-      >
-        <!-- Os seus logos da EPALI e ACM continuam aqui normalmente -->
+      <header>
+    <!-- Essa div "empacota" os logos para eles ficarem juntos no centro -->
+    <div class="logos-container">
+        <img src="/img/logo-epali.png" alt="EPALI" class="logo-epali">
+        <img src="/img/logo-acm.png" alt="ACM" class="logo-acm">
+    </div>
 
-        <!-- Novo botão ADM limpo, apenas com a classe -->
-        <a href="/admin.html" class="btn-adm">Área ADM</a>
-      </header>
-    </header>
+    <!-- O botão fica solto aqui dentro, e o CSS joga ele pro canto -->
+    <a href="/admin.html" class="btn-adm">Área ADM</a>
+</header>
 
     <!-- Botões de Troca de Documento -->
     <div class="seletor-documento">
