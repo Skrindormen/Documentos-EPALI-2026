@@ -64,7 +64,8 @@ public class SupabaseStorageService {
             headers.set("Content-Type", "application/json");
 
             // O parâmetro "search" faz o Supabase procurar em TODAS as subpastas automaticamente
-            String body = "{\"search\": \"Autorizacao_\"}";
+            // A API exige o parâmetro "prefix", mesmo que vazio, junto com o "search"
+            String body = "{\"prefix\": \"\", \"search\": \"Autorizacao_\"}";
             HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
             // CORREÇÃO AQUI: Trocado supabaseBucket por bucketName
