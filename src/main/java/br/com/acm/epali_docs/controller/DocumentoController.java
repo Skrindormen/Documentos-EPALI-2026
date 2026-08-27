@@ -1,12 +1,16 @@
 package br.com.acm.epali_docs.controller;
 
-import br.com.acm.epali_docs.service.DocumentoService;
-import br.com.acm.epali_docs.service.SupabaseStorageService;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
+import br.com.acm.epali_docs.service.DocumentoService;
+import br.com.acm.epali_docs.service.SupabaseStorageService;
 
 @RestController
 @RequestMapping("/api/documentos")
@@ -50,7 +54,6 @@ public class DocumentoController {
             String subpasta = tipoDocumento.equals("imagem") ? "autorizacao_imagem" : "autorizacao_menor";
             
             // Junta tudo: Unidade / Subpasta / Nome_do_Arquivo.pdf
-            // Exemplo: Guarulhos/autorizacao_menor/Autorizacao_MENOR_heitor.pdf
             String caminhoSupabase = unidade + "/" + subpasta + "/" + nomeArquivoFinal;
 
             // 3. Passa os dados de texto junto com a assinatura para o Serviço preencher tudo!
@@ -59,18 +62,61 @@ public class DocumentoController {
             // 4. Envia para o Supabase usando o CAMINHO COMPLETO COM AS PASTAS
             String urlPublica = supabaseStorageService.enviarArquivo(pdfGerado, caminhoSupabase);
 
-            // 5. Retorna a tela de sucesso (adicionei um texto mostrando a pasta que foi salva)
-            return "<div style='font-family: Arial; text-align: center; margin-top: 50px;'>" +
-                   "<h1 style='color: #0033A0;'>Sucesso!</h1>" +
-                   "<p>O documento de <b>" + pessoaReferencia + "</b> foi assinado e salvo na nuvem da ACM.</p>" +
-                   "<p style='color: #666; font-size: 14px;'>Salvo na pasta: <b>" + unidade + " &gt; " + subpasta + "</b></p>" +
-                   "<p>Você já pode acessar o PDF gerado clicando no botão abaixo:</p>" +
-                   "<a href='" + urlPublica + "' target='_blank' style='display: inline-block; margin-top: 20px; margin-right: 10px; padding: 10px 20px; background: #009688; color: white; text-decoration: none; border-radius: 5px;'>Visualizar Documento</a>" +
-                   "<a href='/index.html' style='display: inline-block; margin-top: 20px; padding: 10px 20px; background: #E31837; color: white; text-decoration: none; border-radius: 5px;'>Enviar novo documento</a>" +
-                   "</div>";
+            // 5. NOVA TELA DE SUCESSO (Com o layout em cartão conectando no CSS externo)
+            return "<!DOCTYPE html>\n" +
+                   "<html lang=\"pt-BR\">\n" +
+                   "<head>\n" +
+                   "    <meta charset=\"UTF-8\">\n" +
+                   "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                   "    <title>Sucesso - Portal EPALI</title>\n" +
+                   "    <link rel=\"stylesheet\" href=\"/css/sucesso.css\">\n" +
+                   "</head>\n" +
+                   "<body>\n" +
+                   "    <div class=\"success-card\">\n" +
+                   "        <h1 class=\"success-title\">Sucesso!</h1>\n" +
+                   "        <p class=\"success-message\">\n" +
+                   "            O documento de <strong>" + pessoaReferencia + "</strong> foi assinado e salvo na nuvem.\n" +
+                   "        </p>\n" +
+                   "        <div class=\"success-path\">\n" +
+                   "            Salvo na pasta: <strong>" + unidade + " &gt; " + subpasta + "</strong>\n" +
+                   "        </div>\n" +
+                   "        <p class=\"success-message\">Você já pode acessar o PDF gerado clicando no botão abaixo:</p>\n" +
+                   "        <div class=\"button-group\">\n" +
+                   "            <a href=\"" + urlPublica + "\" target=\"_blank\" class=\"btn btn-view\">Visualizar Documento</a>\n" +
+                   "            <a href=\"/index.html\" class=\"btn btn-new\">Enviar novo documento</a>\n" +
+                   "        </div>\n" +
+                   "    </div>\n" +
+                   "</body>\n" +
+                   "</html>";
 
         } catch (Exception e) {
             e.printStackTrace();
+            
+            // VERIFICAÇÃO DE DOCUMENTO DUPLICADO (Erro 409)
+            if (e.getMessage() != null && (e.getMessage().contains("409") || e.getMessage().contains("Duplicate") || e.getMessage().contains("KeyAlreadyExists"))) {
+                return "<!DOCTYPE html>\n" +
+                       "<html lang=\"pt-BR\">\n" +
+                       "<head>\n" +
+                       "    <meta charset=\"UTF-8\">\n" +
+                       "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                       "    <title>Atenção - Portal EPALI</title>\n" +
+                       "    <link rel=\"stylesheet\" href=\"/css/duplicado.css\">\n" +
+                       "</head>\n" +
+                       "<body>\n" +
+                       "    <div class=\"warning-card\">\n" +
+                       "        <h1 class=\"warning-title\">Atenção</h1>\n" +
+                       "        <p class=\"warning-message\">\n" +
+                       "            Um documento já foi preenchido para esse jovem, se achar necessário entre em contato com um membro da comissão.\n" +
+                       "        </p>\n" +
+                       "        <div class=\"button-group\">\n" +
+                       "            <a href=\"/index.html\" class=\"btn btn-back\">Voltar para o Início</a>\n" +
+                       "        </div>\n" +
+                       "    </div>\n" +
+                       "</body>\n" +
+                       "</html>";
+            }
+
+            // TELA DE ERRO GENÉRICO (Caso dê um erro inesperado que não seja duplicado)
             return "<h1 style='color: red;'>Erro ao processar o documento:</h1><p>" + e.getMessage() + "</p>";
         }
     }
