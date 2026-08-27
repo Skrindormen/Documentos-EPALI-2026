@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import java.util.ArrayList;
 
 @Service
 public class SupabaseStorageService {
@@ -56,6 +57,9 @@ public class SupabaseStorageService {
     }
     
     public List<Map<String, Object>> buscarTodosDocumentos() {
+        // Criamos uma lista vazia que vai acumular os PDFs de todas as unidades
+        List<Map<String, Object>> todosDocumentos = new ArrayList<>();
+        
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -63,26 +67,52 @@ public class SupabaseStorageService {
             headers.set("apikey", supabaseKey);
             headers.set("Content-Type", "application/json");
 
-            // O parâmetro "search" faz o Supabase procurar em TODAS as subpastas automaticamente
-            // A API exige o parâmetro "prefix", mesmo que vazio, junto com o "search"
-            String body = "{\"prefix\": \"\", \"search\": \"Autorizacao_\"}";
-            HttpEntity<String> entity = new HttpEntity<>(body, headers);
-
-            // CORREÇÃO AQUI: Trocado supabaseBucket por bucketName
             String urlList = supabaseUrl + "/storage/v1/object/list/" + bucketName;
 
-            // Faz a chamada e recebe uma lista de objetos do Supabase
-            ResponseEntity<List> response = restTemplate.exchange(
-                    urlList,
-                    HttpMethod.POST,
-                    entity,
-                    List.class
-            );
+            // Lista de todas as unidades da ACM
+            String[] unidades = {
+                "Alphaville", "Centro", "Guarulhos", "Itaquera", "Lapa", 
+                "Norte", "Osasco", "Ribeirao_Preto", "Santo_Amaro", "Sao_Jose_dos_Campos"
+            };
+            String[] subpastas = {"autorizacao_imagem", "autorizacao_menor"};
 
-            return response.getBody();
+            // O Java vai bater rapidamente na porta de cada pastinha específica e recolher os PDFs
+            for (String unidade : unidades) {
+                for (String subpasta : subpastas) {
+                    String prefixo = unidade + "/" + subpasta;
+                    
+                    // Agora pesquisamos DENTRO da subpasta exata
+                    String body = "{\"prefix\": \"" + prefixo + "\", \"search\": \"Autorizacao_\"}";
+                    HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+                    try {
+                        ResponseEntity<List> response = restTemplate.exchange(urlList, HttpMethod.POST, entity, List.class);
+                        List<Map<String, Object>> arquivos = response.getBody();
+
+                        if (arquivos != null) {
+                            for (Map<String, Object> arquivo : arquivos) {
+                                String nomeOriginal = (String) arquivo.get("name");
+                                
+                                // O Supabase devolve só o nome "Autorizacao.pdf". 
+                                // Nós colamos o caminho da unidade antes para o seu HTML conseguir ler a unidade certa!
+                                if (nomeOriginal != null && nomeOriginal.endsWith(".pdf")) {
+                                    arquivo.put("name", prefixo + "/" + nomeOriginal);
+                                    todosDocumentos.add(arquivo);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        // Se a pasta ainda não existir ou estiver vazia, ele ignora silenciosamente
+                        System.out.println("Nenhum arquivo na pasta: " + prefixo);
+                    }
+                }
+            }
+            
+            return todosDocumentos; // Retorna o "pacotão" cheio de arquivos
+            
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return todosDocumentos; // Retorna a lista vazia (em vez de null) para o seu JavaScript não travar
         }
     }
 }
