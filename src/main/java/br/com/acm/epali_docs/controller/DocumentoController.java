@@ -1,11 +1,13 @@
 package br.com.acm.epali_docs.controller;
 
 import java.util.Map;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,4 +122,12 @@ public class DocumentoController {
             return "<h1 style='color: red;'>Erro ao processar o documento:</h1><p>" + e.getMessage() + "</p>";
         }
     }
+
+// Endpoint que o JavaScript vai chamar para pegar a lista
+    @GetMapping("/listar-todos")
+    @ResponseBody
+    public List<Map<String, Object>> listarDocumentos() {
+        return supabaseStorageService.buscarTodosDocumentos();
+    }
+
 }

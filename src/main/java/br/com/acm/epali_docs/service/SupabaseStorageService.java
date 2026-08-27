@@ -1,7 +1,15 @@
 package br.com.acm.epali_docs.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,6 +52,36 @@ public class SupabaseStorageService {
 
         } catch (Exception e) {
             throw new RuntimeException("Falha na integração com Supabase: " + e.getMessage(), e);
+        }
+    }
+    
+    public List<Map<String, Object>> buscarTodosDocumentos() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + supabaseKey);
+            headers.set("apikey", supabaseKey);
+            headers.set("Content-Type", "application/json");
+
+            // O parâmetro "search" faz o Supabase procurar em TODAS as subpastas automaticamente
+            String body = "{\"search\": \"Autorizacao_\"}";
+            HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+            // CORREÇÃO AQUI: Trocado supabaseBucket por bucketName
+            String urlList = supabaseUrl + "/storage/v1/object/list/" + bucketName;
+
+            // Faz a chamada e recebe uma lista de objetos do Supabase
+            ResponseEntity<List> response = restTemplate.exchange(
+                    urlList,
+                    HttpMethod.POST,
+                    entity,
+                    List.class
+            );
+
+            return response.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

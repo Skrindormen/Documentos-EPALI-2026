@@ -1,0 +1,133 @@
+/* admin.css */
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background-color: #f4f7f6;
+  margin: 0;
+  color: #333;
+}
+
+/* Tela de Login Simples */
+#login-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f7f6;
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-box input {
+  padding: 12px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.login-box button {
+  padding: 12px 24px;
+  background-color: #0033a0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Painel ADM */
+#admin-content {
+  display: none; /* Escondido por padrão */
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+}
+
+.search-bar {
+  padding: 12px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Layout em Grid para as Listas */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.list-section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.list-section h2 {
+  color: #0033a0;
+  border-bottom: 2px solid #009688;
+  padding-bottom: 10px;
+  margin-top: 0;
+}
+
+.doc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.doc-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.doc-item:last-child {
+  border-bottom: none;
+}
+
+.doc-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.doc-unit {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.tag-imagem {
+  color: #009688;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+.tag-menor {
+  color: #e51c23;
+  font-weight: bold;
+  font-size: 0.8rem;
+}

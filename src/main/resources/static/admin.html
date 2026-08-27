@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel ADM - EPALI</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body>
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen">
+      <div class="login-box">
+        <h2 style="color: #0033a0">Acesso Restrito</h2>
+        <p>Insira seu e-mail da comissão para acessar:</p>
+        <input
+          type="email"
+          id="email-input"
+          placeholder="seuemail@exemplo.com"
+        />
+        <br />
+        <button onclick="verificarAcesso()">Entrar</button>
+        <p id="erro-login" style="color: red; display: none; margin-top: 10px">
+          E-mail não autorizado.
+        </p>
+      </div>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO -->
+    <div id="admin-content">
+      <div class="admin-header">
+        <h1 style="color: #0033a0; margin: 0">Painel de Documentos</h1>
+        <input
+          type="text"
+          id="search-input"
+          class="search-bar"
+          onkeyup="filtrarNomes()"
+          placeholder="Pesquisar por nome ou unidade..."
+        />
+      </div>
+
+      <div class="grid-container">
+        <!-- Coluna 1: Autorização de Imagem -->
+        <div class="list-section">
+          <h2>Autorização de Imagem</h2>
+          <ul class="doc-list" id="lista-imagem">
+            <!-- Estes são dados de exemplo. O próximo passo será puxar isso do Java -->
+            <li class="doc-item">
+              <div class="doc-info">
+                <span class="doc-name">João da Silva</span>
+                <span class="doc-unit">Guarulhos</span>
+              </div>
+              <span class="tag-imagem">IMAGEM</span>
+            </li>
+            <li class="doc-item">
+              <div class="doc-info">
+                <span class="doc-name">Maria Oliveira</span>
+                <span class="doc-unit">Osasco</span>
+              </div>
+              <span class="tag-imagem">IMAGEM</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Coluna 2: Autorização de Menor -->
+        <div class="list-section">
+          <h2>Autorização de Menor</h2>
+          <ul class="doc-list" id="lista-menor">
+            <li class="doc-item">
+              <div class="doc-info">
+                <span class="doc-name">Pedro Santos</span>
+                <span class="doc-unit">Itaquera</span>
+              </div>
+              <span class="tag-menor">MENOR</span>
+            </li>
+            <li class="doc-item">
+              <div class="doc-info">
+                <span class="doc-name">Ana Costa</span>
+                <span class="doc-unit">Guarulhos</span>
+              </div>
+              <span class="tag-menor">MENOR</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 1. LISTA DE E-MAILS PERMITIDOS (Adicione os e-mails da comissão aqui)
+      const emailsPermitidos = [
+        "amanda.areas@uol.com.br",
+        "biachinellato@gmail.com",
+        "carloslopesprofi@gmail.com",
+        "catharina.tognetti@gmail.com",
+        "danilo.oliveiraconceicao28@gmail.com",
+        "heitornorilla@gmail.com",
+        "helocontibelo@gmail.com",
+        "henrique.santos.alencar@usp.br",
+        "isatoschi13@gmail.com",
+        "joao.custodio1309@gmail.com",
+        "juliapereiravita2006@gmail.com",
+        "laura.s.sanches2006@gmail.com",
+        "luizamabtum@icloud.com",
+        "manuellamoraes14@gmail.com",
+        "marisolthesun@gmail.com",
+        "tangstabile@gmail.com",
+        "viniciusc.ferri@gmail.com",
+        "dasouza51@gmail.com",
+        "feliperocha07@gmail.com",
+      ];
+
+      function verificarAcesso() {
+        const emailDigitado = document
+          .getElementById("email-input")
+          .value.trim()
+          .toLowerCase();
+        if (emailsPermitidos.includes(emailDigitado)) {
+          document.getElementById("login-screen").style.display = "none";
+          document.getElementById("admin-content").style.display = "block";
+        } else {
+          document.getElementById("erro-login").style.display = "block";
+        }
+      }
+
+      // 2. FUNÇÃO DA BARRA DE PESQUISA
+      function filtrarNomes() {
+        const termo = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const itens = document.querySelectorAll(".doc-item");
+
+        itens.forEach((item) => {
+          const textoItem = item.innerText.toLowerCase();
+          if (textoItem.includes(termo)) {
+            item.style.display = "flex";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
