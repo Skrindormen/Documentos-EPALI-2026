@@ -1,36 +1,76 @@
 /* admin.css */
 body {
   font-family: "Segoe UI", Roboto, sans-serif;
-  background-color: #f4f7f6;
+  background-color: #f5f0e6; /* Fundo suave combinando com o tema floresta */
   margin: 0;
   color: #333;
 }
 
-/* --- CABEÇALHO GLOBAL (HEADER) --- */
-.main-header {
-  background-color: #0033a0; /* Cor azul principal */
-  color: white;
-  padding: 15px 40px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* --- CABEÇALHO GLOBAL (COM FOLHAGEM) --- */
+header {
+  width: 100%;
+  background-color: #1a3623;
+  background-image: url("/img/fundo-folhas.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 40px 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  margin-bottom: 40px;
+  position: relative;
 }
 
-.main-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
+.logos-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo-epali {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
+}
+
+.logo-acm {
+  height: 75px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
+}
+
+.btn-adm {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-adm:hover {
+  background-color: #ffffff;
+  color: #1b4332;
 }
 
 /* --- TELA DE LOGIN --- */
 #login-screen {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  height: calc(100vh - 65px); /* Altura da tela menos o cabeçalho */
-  background-color: #f4f7f6;
+  height: calc(100vh - 200px);
+  padding-top: 40px;
 }
 
 .login-box {
@@ -39,6 +79,11 @@ body {
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-align: center;
+  border-top: 6px solid #1a3623; /* Detalhe verde floresta no topo do cartão */
+}
+
+.login-box h2 {
+  color: #1a3623;
 }
 
 .login-box input {
@@ -51,18 +96,23 @@ body {
 
 .login-box button {
   padding: 12px 24px;
-  background-color: #0033a0;
+  background-color: #1a3623; /* Botão verde */
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.login-box button:hover {
+  background-color: #2d5a3f;
 }
 
 /* --- PAINEL ADM --- */
 #admin-content {
   display: none;
-  padding: 40px;
+  padding: 0 40px 40px 40px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -79,11 +129,10 @@ body {
 }
 
 .admin-title {
-  color: #0033a0;
+  color: #1a3623; /* Título verde */
   margin: 0;
 }
 
-/* Controles de Filtro e Pesquisa */
 .filter-group {
   display: flex;
   gap: 15px;
@@ -101,7 +150,6 @@ body {
 .search-bar {
   width: 280px;
 }
-
 .filter-select {
   width: 200px;
   cursor: pointer;
@@ -122,8 +170,8 @@ body {
 }
 
 .list-section h2 {
-  color: #0033a0;
-  border-bottom: 2px solid #009688;
+  color: #1a3623;
+  border-bottom: 2px solid #2d5a3f; /* Linha divisória verde */
   padding-bottom: 10px;
   margin-top: 0;
 }
@@ -162,7 +210,7 @@ body {
 }
 
 .tag-imagem {
-  color: #009688;
+  color: #2d5a3f;
   font-weight: bold;
   font-size: 0.8rem;
 }
