@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Portal de Assinaturas EPALI 2025</title>
+    <!-- Conectando o arquivo CSS externo -->
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Cabeçalho com Fundo de Folhas e Logos -->
+    <header>
+      <div class="logos-container">
+        <!-- Substitua pelo caminho correto do logo do EPALI -->
+        <img src="/img/logo-epali.png" alt="Logo EPALI" class="logo-epali" />
+        <!-- Substitua pelo caminho correto do logo da ACM -->
+        <img src="/img/logo-acm.png" alt="Logo ACM" class="logo-acm" />
+      </div>
+    </header>
+
+    <!-- Botões de Troca de Documento -->
+    <div class="seletor-documento">
+      <button class="btn-tab ativo" onclick="mudarDocumento('imagem')">
+        Autorização de Imagem
+      </button>
+      <button class="btn-tab" onclick="mudarDocumento('menor')">
+        Autorização de Menor
+      </button>
+    </div>
+
+    <div class="documento-container">
+      <!-- O formulário aponta para o seu Controller -->
+      <form
+        action="/api/documentos/enviar"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <!-- Campo oculto para avisar o Spring Boot qual documento foi gerado -->
+        <input
+          type="hidden"
+          name="tipo_documento"
+          id="tipo_documento"
+          value="imagem"
+        />
+
+        <div class="secao-unidade">
+          <label>Unidade ACM do participante:</label>
+          <select name="unidade" required>
+            <option value="">Selecione...</option>
+            <option value="Alphaville">Alphaville</option>
+            <option value="Centro">Centro</option>
+            <option value="Guarulhos">Guarulhos</option>
+            <option value="Itaquera">Itaquera</option>
+            <option value="Lapa">Lapa</option>
+            <option value="Norte">Norte</option>
+            <option value="Osasco">Osasco</option>
+            <option value="Ribeirao_Preto">Ribeirão Preto</option>
+            <option value="Santo_Amaro">Santo Amaro</option>
+            <option value="Sao_Jose_dos_Campos">São José dos Campos</option>
+          </select>
+        </div>
+
+        <!-- ================= FORMULÁRIO 1: IMAGEM ================= -->
+        <div id="doc-imagem" class="form-secao ativo">
+          <h2>AUTORIZAÇÃO DO USO DE IMAGEM</h2>
+          <div class="texto-formulario">
+            Eu,
+            <input
+              type="text"
+              name="nome_responsavel_img"
+              class="linha-longa"
+            /><br />
+            R.G.n° <input type="text" name="rg" class="linha-curta" /> e CPF n°
+            <input type="text" name="cpf" class="linha-curta" /> autorizo a
+            utilização da<br />
+            imagem do meu filho(a)
+            <input
+              type="text"
+              name="nome_filho_img"
+              class="linha-longa"
+            /><br />
+            pelas ACMS/YMCAs nacionais e internacionais, para divulgação
+            institucional e<br />
+            comercial, por tempo indeterminado, a partir desta data. Registrado
+            no dia
+            <input
+              type="text"
+              name="data_registro"
+              class="linha-data"
+              maxlength="10"
+              readonly
+            />,<br />
+            não acarretando nenhum ônus para as ACMS/YMCAs, agência, produtora
+            ou fotógrafo.
+
+            <div class="bloco-contato">
+              Telefone Residencial:
+              <input
+                type="text"
+                name="tel_residencial"
+                class="linha-media"
+              /><br />
+              Telefone Celular:
+              <input type="text" name="tel_celular" class="linha-media" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= FORMULÁRIO 2: MENOR ================= -->
+        <div id="doc-menor" class="form-secao">
+          <h2>AUTORIZAÇÃO DE PARTICIPAÇÃO (MENOR DE IDADE)</h2>
+
+          <!-- Campo do nome do filho SEM o 'required' -->
+          <div
+            class="secao-unidade"
+            style="margin-bottom: 25px; text-align: center"
+          >
+            <label style="display: block; margin-bottom: 5px"
+              >Nome do Filho(a) / Participante:</label
+            >
+            <input
+              type="text"
+              name="nome_filho_menor"
+              class="linha-longa"
+              placeholder="Digite o nome completo do menor"
+              style="width: 100%; max-width: 400px; display: inline-block"
+            />
+          </div>
+
+          <!-- Texto centralizado -->
+          <div
+            class="texto-formulario"
+            style="text-align: center; line-height: 1.6"
+          >
+            Estou ciente de que ao assinar esta ficha estou autorizando<br />
+            o (a) meu (minha) filho (a) a participar do EPALI 2025<br />
+            promovido pela ACM São Paulo e declaro serem<br />
+            verdadeiras todas as informações aqui contidas.
+          </div>
+        </div>
+
+        <!-- ================= ÁREA COMUM A AMBOS OS DOCUMENTOS ================= -->
+        <div class="bloco-data">
+          São Paulo,
+          <input type="text" name="dia" class="linha-ano" readonly /> de
+          <input type="text" name="mes" class="linha-media" readonly /> de
+          20<input type="text" name="ano" class="linha-ano" readonly />
+        </div>
+
+        <div class="secao-assinatura">
+          <label for="upload-assinatura" class="botao-upload">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#0033A0"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Anexar Assinatura</span>
+          </label>
+          <input
+            type="file"
+            id="upload-assinatura"
+            name="assinatura"
+            accept="image/*"
+            required
+          />
+
+          <!-- O campo de texto agora tem a largura exata de 350px para combinar com o design -->
+          <div
+            id="nome_responsavel_assinatura_container"
+            style="display: none; margin-bottom: 8px"
+          >
+            <input
+              type="text"
+              name="nome_responsavel_menor"
+              placeholder="Digite o nome do Responsável"
+              style="width: 350px"
+            />
+          </div>
+
+          <!-- Adicionei um ID nesta linha para o JavaScript conseguir escondê-la -->
+          <div class="linha-assinatura" id="linha_fixa_assinatura"></div>
+          <div class="texto-assinatura" id="texto-label-assinatura">
+            Assinatura
+          </div>
+        </div>
+
+        <button type="submit" class="btn-enviar">
+          Gerar e Enviar Documento
+        </button>
+      </form>
+    </div>
+
+    <!-- Scripts de Interatividade -->
+    <!-- Scripts de Interatividade -->
+    <script>
+      // Função para alternar entre os documentos
+      function mudarDocumento(tipo) {
+        // Atualiza os botões (Abas)
+        document
+          .querySelectorAll(".btn-tab")
+          .forEach((btn) => btn.classList.remove("ativo"));
+        event.target.classList.add("ativo");
+
+        // Esconde todas as seções e mostra a correta
+        document
+          .querySelectorAll(".form-secao")
+          .forEach((sec) => sec.classList.remove("ativo"));
+        document.getElementById("doc-" + tipo).classList.add("ativo");
+
+        // Atualiza o campo oculto para o backend saber qual PDF preencher
+        document.getElementById("tipo_documento").value = tipo;
+
+        // Adapta o campo da assinatura dependendo do documento
+        if (tipo === "menor") {
+          document.getElementById(
+            "nome_responsavel_assinatura_container",
+          ).style.display = "block";
+          document.getElementById("linha_fixa_assinatura").style.display =
+            "none"; // Esconde a linha preta!
+          document.getElementById("texto-label-assinatura").textContent =
+            "Nome e assinatura do pai ou responsável";
+        } else {
+          document.getElementById(
+            "nome_responsavel_assinatura_container",
+          ).style.display = "none";
+          document.getElementById("linha_fixa_assinatura").style.display =
+            "block"; // Mostra a linha preta!
+          document.getElementById("texto-label-assinatura").textContent =
+            "Assinatura";
+        }
+      }
+
+      // Lógica de Upload da Imagem
+      document
+        .getElementById("upload-assinatura")
+        .addEventListener("change", function (e) {
+          var fileName = e.target.files[0].name;
+          document.querySelector(".botao-upload span").textContent =
+            "Anexado: " + fileName;
+          document
+            .querySelector(".botao-upload svg")
+            .setAttribute("stroke", "#E31837"); // Fica vermelho quando anexa
+        });
+
+      // Preenchimento Automático das Datas
+      window.onload = function () {
+        const dataAtual = new Date();
+        const dia = String(dataAtual.getDate()).padStart(2, "0");
+        const mesNumerico = String(dataAtual.getMonth() + 1).padStart(2, "0");
+        const meses = [
+          "janeiro",
+          "fevereiro",
+          "março",
+          "abril",
+          "maio",
+          "junho",
+          "julho",
+          "agosto",
+          "setembro",
+          "outubro",
+          "novembro",
+          "dezembro",
+        ];
+        const mesExtenso = meses[dataAtual.getMonth()];
+        const anoCompleto = dataAtual.getFullYear();
+        const anoAbreviado = String(anoCompleto).slice(-2);
+
+        document.querySelector('input[name="data_registro"]').value =
+          `${dia}/${mesNumerico}/${anoCompleto}`;
+        document.querySelector('input[name="dia"]').value = dia;
+        document.querySelector('input[name="mes"]').value = mesExtenso;
+        document.querySelector('input[name="ano"]').value = anoAbreviado;
+      };
+
+      // Intercepta qualquer erro de validação (campos vazios) do formulário
+      document.addEventListener(
+        "invalid",
+        function (e) {
+          // Impede o navegador de tentar focar no campo escondido e travar
+          e.preventDefault();
+
+          // Mostra o nosso balão customizado
+          mostrarErro();
+        },
+        true,
+      );
+
+      // Função que faz o balão subir, ficar 4 segundos e descer
+      function mostrarErro() {
+        const balao = document.getElementById("balao-erro");
+
+        // Adiciona a classe que faz ele aparecer
+        balao.classList.add("mostrar");
+
+        // Tira a classe depois de 4 segundos (4000 milissegundos)
+        setTimeout(() => {
+          balao.classList.remove("mostrar");
+        }, 4000);
+      }
+    </script>
+
+    <!-- Balão de Erro Customizado -->
+    <div id="balao-erro">
+      ⚠️ Atenção: Preencha todos os campos obrigatórios e anexe a assinatura!
+    </div>
+  </body>
+</html>

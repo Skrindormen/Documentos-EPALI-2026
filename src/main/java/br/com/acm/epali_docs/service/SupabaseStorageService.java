@@ -1,0 +1,49 @@
+package br.com.acm.epali_docs.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class SupabaseStorageService {
+
+    @Value("${supabase.url}")
+    private String supabaseUrl;
+
+    @Value("${supabase.key}")
+    private String supabaseKey;
+
+    @Value("${supabase.bucket}")
+    private String bucketName;
+
+    public String enviarArquivo(byte[] arquivoBytes, String nomeArquivo) {
+        try {
+            // URL do endpoint de Storage do Supabase para upload de arquivos
+            String url = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + nomeArquivo;
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Configura os cabeçalhos de autenticação exigidos pelo Supabase
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.set("Authorization", "Bearer " + supabaseKey);
+            headers.set("apikey", supabaseKey);
+
+            HttpEntity<byte[]> requestEntity = new HttpEntity<>(arquivoBytes, headers);
+
+            // Faz a requisição POST enviando os bytes do PDF
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.CREATED) {
+                // Retorna a URL pública direta onde o documento pode ser acessado depois
+                return supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + nomeArquivo;
+            } else {
+                throw new RuntimeException("Erro ao enviar para o Supabase: " + response.getBody());
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Falha na integração com Supabase: " + e.getMessage(), e);
+        }
+    }
+}
